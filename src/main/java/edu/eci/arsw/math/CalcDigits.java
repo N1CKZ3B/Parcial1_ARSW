@@ -107,6 +107,8 @@ public class CalcDigits extends Thread{
         return result;
     }
 
-
+    public int getBytesLength(){
+        return bytes.length;
+    }
 }
 

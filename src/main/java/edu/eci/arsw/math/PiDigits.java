@@ -1,6 +1,7 @@
 package edu.eci.arsw.math;
 
 import java.util.LinkedList;
+import java.util.Scanner;
 
 ///  <summary>
 ///  An implementation of the Bailey-Borwein-Plouffe formula for calculating hexadecimal
@@ -14,6 +15,8 @@ public class PiDigits {
     private static double Epsilon = 1e-17;
 
     private static LinkedList<CalcDigits> threads = new LinkedList<>();
+
+    private static int total;
 
     
     /**
@@ -30,13 +33,46 @@ public class PiDigits {
         if (count < 0) {
             throw new RuntimeException("Invalid Interval");
         }
+        int COMIENZO = start;
+        int CONTEO_FINAL = count;
+        int partir = count / N;
+        for (int i = 0 ; i < N ; i++){
+            if (i == N-1){
+                start = partir * (N-1);
+                count = CONTEO_FINAL;
+            }else if (i == 0){
+                start = COMIENZO;
+                count = partir;
+            }else{
+                start = partir * i;
+                count = partir * (i+1);
+            }
 
-        CalcDigits t = new CalcDigits(start,count);
-        t.run();
+            CalcDigits t = new CalcDigits(start,count);
+            threads.add(t);
+        }
 
-        return t.getBytes();
+        for (CalcDigits t : threads){
+            t.start();
 
+        }
 
+        total = 0;
+        byte[] b = new byte[0];
+
+        for (CalcDigits t : threads){
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            String s = b.toString()+t.getBytes().toString();
+
+            b = s.getBytes();
+        }
+
+        return b;
 
 
     }
