@@ -13,7 +13,7 @@ import java.util.Arrays;
  */
 public class Main {
 
-    public static void main(String a[]) {
+    public static void main(String a[]) throws InterruptedException {
 
 
         //System.out.println(bytesToHex(PiDigits.getDigits(0, 10)));

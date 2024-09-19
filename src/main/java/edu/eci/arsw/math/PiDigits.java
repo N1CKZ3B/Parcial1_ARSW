@@ -25,7 +25,7 @@ public class PiDigits {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public static byte[] getDigits(int start, int count, int N) {
+    public static byte[] getDigits(int start, int count, int N) throws InterruptedException {
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
         }
@@ -59,22 +59,30 @@ public class PiDigits {
 
         total = 0;
         byte[] b = new byte[0];
+        while( b.length < CONTEO_FINAL){
+            Thread.sleep(5000);
+            for (CalcDigits t : threads){
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
-        for (CalcDigits t : threads){
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                String s = b.toString()+t.getBytes().toString();
+
+                b = s.getBytes();
+            }
+            System.out.println("Se han encontrado " + b.length +"bytes");
+
+            for (CalcDigits t : threads){
+                t.start();
             }
 
-            String s = b.toString()+t.getBytes().toString();
-
-            b = s.getBytes();
+            Scanner sc = new Scanner("Ingrese enter para continuar ...");
         }
 
+
         return b;
-
-
     }
 
 }
